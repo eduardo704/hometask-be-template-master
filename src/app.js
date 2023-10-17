@@ -22,17 +22,12 @@ app.get('/contracts/:id', getProfile, async (req, res) => {
     if (!contract) return res.status(404).end()
     res.json(req.profile)
 })
+
 app.get('/contracts', getProfile, async (req, res) => {
-    const { Contract } = req.app.get('models')
-    const headerProfile = req.profile;
-    const { id } = req.params
+    const userId = Number(req.profile.id);
 
-
-
-    if (headerProfile.id !== Number(id)) return res.status(403).end()
-
-    const contract = await Contract.findOne({ where: { id } })
+    const contract = await contractUC.getContractCurrentUser(userId)
     if (!contract) return res.status(404).end()
-    res.json(req.profile)
+    res.json(contract)
 })
 module.exports = app;
