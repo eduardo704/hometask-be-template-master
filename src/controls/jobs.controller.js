@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/unpaid', getProfile, async (req, res) => {
     const userId = Number(req.profile.id);
 
-    const jobs = await jobUC.getUnpaidForUser(userId)
+    const jobs = await jobUC.getUnpaidJobsForUser(userId)
     if (!jobs) return res.status(404).end()
     res.json(jobs)
 })

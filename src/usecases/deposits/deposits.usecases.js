@@ -1,39 +1,18 @@
-const { Job, Contract, Profile, sequelize } = require("../../model");
-const { Op } = require("sequelize");
+const { usersDB } = require("../../db/users/users.db");
+
 
 async function depositForUser(userId, amount) {
-    const profile = await Profile.findOne({
-        include: {
-            model: Contract,
-            as: 'Client',
-            where: {
-                status: {
-                    [Op.not]: 'terminated',
-                },
-            },
-            include: {
-                model: Job,
-                where: {
-                    paid: {
-                        [Op.not]: true,
-                    }
-                }
-            }
-        },
-        where: {
-            id: userId
-        }
-    });
+    const profile = await usersDB.getUserWithContractAndNotPaidJobs(userId);
 
+    const jobs = profile.Client.flatMap(contract => contract.Jobs)
 
+    const totalToPay = getTotalToPay(jobs);
 
-    const jobs = profile.Client.flatMap(contract => contract.Jobs)//||[];
+    let maxDeposit = Number.MAX_SAFE_INTEGER;
 
-    const totalToPay = jobs.reduce((prev, curr) => {
-        return prev + curr.price
-    }, 0)
-
-    const maxDeposit = totalToPay * 0.25;
+    if (totalToPay > 0) {
+        maxDeposit = totalToPay * 0.25;
+    }
 
     if (maxDeposit > amount) {
         await profile.increment({ 'balance': amount })
@@ -41,16 +20,7 @@ async function depositForUser(userId, amount) {
     } else {
         return 'Amount over max allowed'
     }
-
-
-
 }
-
-
-
-
-
-
 
 const depostisUC = {
     depositForUser,
@@ -59,3 +29,9 @@ const depostisUC = {
 module.exports = {
     depostisUC
 };
+
+function getTotalToPay(jobs) {
+    return jobs.reduce((prev, curr) => {
+        return prev + curr.price;
+    }, 0);
+}

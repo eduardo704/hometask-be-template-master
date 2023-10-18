@@ -1,23 +1,14 @@
-const { Contract } = require("../../model");
-const { Op } = require("sequelize");
+const { contractsDB } = require("../../db/contracts/contract.db");
+
 
 async function getContractById(id) {
-    return await Contract.findOne({ where: { id } })
+    return await contractsDB.getContractById(id)
 }
 async function getAll() {
-    return await Contract.findAll({ include: { all: true, nested: true }});
+    return await contractsDB.getAllContracts()
 }
-
-
 async function getContractCurrentUser(userId) {
-    return await Contract.findAll({
-        where: {
-            status: {
-                [Op.not]: 'terminated',
-            },
-            [Op.or]: [{ ClientId: userId }, { ContractorId: userId }]
-        }
-    })
+    return await contractsDB.getAllContractsForCurrentUser(userId)
 }
 
 const contractUC = {
