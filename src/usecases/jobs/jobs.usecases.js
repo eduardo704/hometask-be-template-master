@@ -43,7 +43,7 @@ async function pay(jobId, userId) {
     if (payingUser && job && contractor) {
         if (payingUser.balance > job.price && !job.paid) {
             try {
-                const result = await sequelize.transaction(async (t) => {
+                await sequelize.transaction(async (t) => {
                     await Profile.update(
                         { balance: payingUser.balance - job.price },
                         { where: { id: payingUser.id } }

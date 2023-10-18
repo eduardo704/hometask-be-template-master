@@ -5,11 +5,12 @@ const { getProfile } = require('./middleware/getProfile');
 const { contractUC } = require('./usecases/contracts/contracts.usecases');
 const { jobUC } = require('./usecases/jobs/jobs.usecases');
 const { depostisUC } = require('./usecases/deposits/deposits.usecases');
+const { adminUC } = require('./usecases/admin/admin.usecases');
 const app = express();
 app.use(bodyParser.json());
 app.set('sequelize', sequelize)
 app.set('models', sequelize.models)
-
+const { DateTime } = require("luxon");
 /**
  * FIX ME!
  * @returns contract by id
@@ -29,6 +30,13 @@ app.get('/contracts', getProfile, async (req, res) => {
     const userId = Number(req.profile.id);
 
     const contract = await contractUC.getContractCurrentUser(userId)
+    if (!contract) return res.status(404).end()
+    res.json(contract)
+})
+
+app.get('/all/contracts', getProfile, async (req, res) => {
+
+    const contract = await contractUC.getAll()
     if (!contract) return res.status(404).end()
     res.json(contract)
 })
@@ -68,6 +76,22 @@ app.post('/balances/deposit/:userId', getProfile, async (req, res) => {
     const user = await depostisUC.depositForUser(userId, amount);
 
     if (user === 'Amount over max allowed') return res.status(400).json({ message: 'Amount over max allowed' }).end()
+
+    res.json(user)
+})
+app.get('/admin/best-profession', getProfile, async (req, res) => {
+    const profileId = Number(req.profile.id);
+
+    const { start, end } = req.query;
+
+    const startDate=DateTime.fromFormat(start, "dd-MM-yyyy");
+    const endDate=DateTime.fromFormat(end, "dd-MM-yyyy");
+
+    console.log(startDate)
+    
+
+    const user = await adminUC.professionMadeMoreMoneyForTime(startDate.toJSDate(), endDate.toJSDate());
+
 
     res.json(user)
 })

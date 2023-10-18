@@ -4,6 +4,9 @@ const { Op } = require("sequelize");
 async function getContractById(id) {
     return await Contract.findOne({ where: { id } })
 }
+async function getAll() {
+    return await Contract.findAll({ include: { all: true, nested: true }});
+}
 
 
 async function getContractCurrentUser(userId) {
@@ -18,6 +21,7 @@ async function getContractCurrentUser(userId) {
 }
 
 const contractUC = {
+    getAll,
     getContractById,
     getContractCurrentUser
 }
