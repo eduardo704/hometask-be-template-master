@@ -15,7 +15,7 @@ async function bestCustomers(start, end, limit = 2) {
 
     const mapped = getTotalPriceByJob(contracts)
 
-    const best = mapped.sort((a, b) => b.totalPrice - a.totalPrice)
+    const best = mapped.sort((a, b) => b.paid - a.paid)
 
     return best.slice(0, limit);
 }
@@ -36,7 +36,8 @@ function getTotalPriceByJob(contracts) {
             return prev + curr.price;
         }, 0);
         contract['totalPrice'] = totalPrice;
-        return { totalPrice, client: contract.Client };
+        const client=contract.Client;
+        return { paid: totalPrice, id: client.id, fullName: `${client.firstName} ${client.lastName}`};
     });
 }
 
