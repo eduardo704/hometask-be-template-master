@@ -95,5 +95,21 @@ app.get('/admin/best-profession', getProfile, async (req, res) => {
 
     res.json(user)
 })
+app.get('/admin/best-clients', getProfile, async (req, res) => {
+    const profileId = Number(req.profile.id);
+
+    const { start, end , limit} = req.query;
+
+    const startDate=DateTime.fromFormat(start, "dd-MM-yyyy");
+    const endDate=DateTime.fromFormat(end, "dd-MM-yyyy");
+
+    console.log(startDate)
+    
+
+    const user = await adminUC.bestCustomers(startDate.toJSDate(), endDate.toJSDate(), limit);
+
+
+    res.json(user)
+})
 
 module.exports = app;
