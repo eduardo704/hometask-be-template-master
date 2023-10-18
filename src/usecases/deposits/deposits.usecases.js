@@ -30,7 +30,6 @@ async function depositForUser(userId, amount) {
     const jobs = profile.Client.flatMap(contract => contract.Jobs)//||[];
 
     const totalToPay = jobs.reduce((prev, curr) => {
-        console.log(curr)
         return prev + curr.price
     }, 0)
 

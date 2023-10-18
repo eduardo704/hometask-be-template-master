@@ -44,11 +44,10 @@ async function professionMadeMoreMoneyForTime(start, end) {
         if (element > biggest.total) {
             biggest = { name: key, total: element }
         }
-
     }
-
     return biggest;
 }
+
 async function bestCustomers(start, end, limit = 2) {
     const contracts = await Contract.findAll({
         // group: 'Contract.id',
@@ -80,7 +79,6 @@ async function bestCustomers(start, end, limit = 2) {
             return prev + curr.price;
         }, 0)
         contract['totalPrice'] = totalPrice;
-        console.log(totalPrice)
         return { totalPrice, client: contract.Client };
 
     })
@@ -89,11 +87,6 @@ async function bestCustomers(start, end, limit = 2) {
 
     return best.slice(0, limit);
 }
-
-
-
-
-
 
 
 const adminUC = {
