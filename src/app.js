@@ -62,15 +62,10 @@ app.post('/balances/deposit/:userId', getProfile, async (req, res) => {
 
     const { userId } = req.params
 
-    console.log()
-
-
     if (Number(userId) !== Number(profileId)) return res.status(403).end()
     if (isNaN(amount) && amount > 0) return res.status(400).json('Amount missing').end()
 
-
     const user = await depostisUC.depositForUser(userId, amount);
-
 
     if (user === 'Amount over max allowed') return res.status(400).json({ message: 'Amount over max allowed' }).end()
 
