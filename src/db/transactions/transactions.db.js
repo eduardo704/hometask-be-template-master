@@ -1,18 +1,18 @@
-const { Job,  Profile, sequelize } = require("../../model");
+const { Job, Profile, sequelize } = require("../../model");
 
 async function paymentTransaction(payingUser, job, contractor) {
-    await sequelize.transaction(async (t) => {
+    return await sequelize.transaction(async (t) => {
         await Profile.update(
             { balance: payingUser.balance - job.price },
-            { where: { id: payingUser.id } }
+            { where: { id: payingUser.id } }, { transaction: t }
         );
         await Profile.update(
             { balance: payingUser.balance + job.price },
-            { where: { id: contractor.id } }
+            { where: { id: contractor.id } }, { transaction: t }
         );
         await Job.update(
             { paid: true },
-            { where: { id: job.id } }
+            { where: { id: job.id } }, { transaction: t }
         );
 
         return true;

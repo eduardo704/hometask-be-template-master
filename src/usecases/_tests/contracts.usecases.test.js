@@ -8,7 +8,7 @@ jest.mock('../../db/contracts/contract.db');
 describe('Contracts use Case', () => {
     describe('GetContractById', () => {
         test('Should call the db with the correct id', async () => {
-            const spy = jest.fn().mockReturnValue(mockContract);
+            const spy = jest.fn().mockReturnValue(Promise.resolve(mockContract));
             contractsDB.getContractById = spy;
 
             await contractUC.getContractById(1);
@@ -18,7 +18,7 @@ describe('Contracts use Case', () => {
 
     describe('getAll', () => {
         test('Should call the db once', async () => {
-            const spys = jest.fn().mockReturnValue([mockContract]);
+            const spys = jest.fn().mockReturnValue(Promise.resolve([mockContract]));
             contractsDB.getAllContracts = spys;
 
             await contractUC.getAll();
@@ -29,7 +29,7 @@ describe('Contracts use Case', () => {
 
     describe('getContractCurrentUser', () => {
         test('Should call the db with the correct id', async () => {
-            const spy = jest.fn().mockReturnValue(mockUser);
+            const spy = jest.fn().mockReturnValue(Promise.resolve(mockUser));
             contractsDB.getAllContractsForCurrentUser = spy;
 
             await contractUC.getContractCurrentUser(1);

@@ -64,7 +64,7 @@ async function getContractsWithContractorAndJobsBetweenDate(start, end) {
                 model: Job,
                 where: {
                     paid: true,
-                    updatedAt: {
+                    paymentDate: {
                         [Op.between]: [start, end]
                     }
                 },
@@ -88,7 +88,7 @@ async function getContractsWithClientAndJobsBetweenDate(start, end) {
                 model: Job,
                 where: {
                     paid: true,
-                    updatedAt: {
+                    paymentDate: {
                         [Op.between]: [start, end]
                     }
                 },
